@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Help</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a1d24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="IT Help">
+  <link rel="icon" href="/assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+
+<!-- ── Login Screen ─────────────────────────────────────────────────── -->
+<div id="login-screen" class="screen">
+  <div class="login-card">
+    <div class="login-header">
+      <svg class="login-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="80" height="80" rx="16" fill="#111827"/>
+        <rect x="12" y="16" width="56" height="36" rx="4" fill="none" stroke="#3b82f6" stroke-width="4"/>
+        <circle cx="40" cy="28" r="6" fill="#3b82f6"/>
+        <circle cx="24" cy="38" r="4" fill="#22c55e"/>
+        <circle cx="56" cy="38" r="4" fill="#22c55e"/>
+        <line x1="30" y1="31" x2="37" y2="28" stroke="#3b82f6" stroke-width="2"/>
+        <line x1="50" y1="31" x2="43" y2="28" stroke="#3b82f6" stroke-width="2"/>
+        <rect x="34" y="52" width="12" height="6" rx="2" fill="#3b82f6"/>
+        <rect x="26" y="58" width="28" height="4" rx="2" fill="#3b82f6"/>
+      </svg>
+      <h1>IT Help</h1>
+      <p>Workstation Management Suite</p>
+    </div>
+    <div class="login-body">
+      <h2>Sign In</h2>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="Enter username" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <div id="login-err" class="err-msg hidden"></div>
+      <button id="login-btn" class="btn btn-primary btn-full">Sign In</button>
+      <p class="hint-text">Default: admin / admin123</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main App ──────────────────────────────────────────────────────── -->
+<div id="app" class="screen hidden">
+
+  <header class="app-header">
+    <span class="app-name">IT Help</span>
+    <div class="header-right">
+      <span id="hdr-clock" class="hdr-clock"></span>
+      <span id="hdr-user" class="hdr-user"></span>
+      <span id="hdr-role" class="hdr-role"></span>
+      <button class="icon-btn" title="Audit Log" onclick="AuditLog.open()">&#9998;</button>
+      <button class="icon-btn" title="Logout" onclick="Auth.logout()">&#9211;</button>
+    </div>
+  </header>
+
+  <nav class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" data-tab="settings">&#9881; Settings</button>
+    <button class="tab-btn" data-tab="inventory">&#128421; Inventory</button>
+    <button class="tab-btn" data-tab="permissions">&#128274; Permissions</button>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- ── Settings Tab ─────────────────────────────────────── -->
+    <section id="tab-settings" class="tab-pane active">
+      <div class="pane-inner">
+        <div class="pane-header">
+          <div>
+            <h2>Settings Profiles</h2>
+            <p class="subtitle">Apply pre-built configuration profiles to this workstation</p>
+          </div>
+          <button class="btn btn-ghost" onclick="Settings.load()">&#8635; Reload</button>
+        </div>
+
+        <div class="split">
+          <div class="split-left">
+            <div class="card">
+              <div class="card-label">Available Profiles</div>
+              <div id="profiles-list" class="profiles-list">
+                <div class="empty-state">Loading profiles...</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-label">Rollback Snapshot</div>
+              <div class="row-gap">
+                <select id="rollback-sel" class="form-ctrl flex-1"></select>
+                <button class="btn btn-danger" onclick="Settings.doRollback()">Restore</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="split-right">
+            <div class="card card-flex">
+              <div class="card-label">Change Log</div>
+              <div id="settings-log" class="log-viewer"></div>
+              <div class="log-bar">
+                <button class="btn btn-ghost btn-sm" onclick="Log.clear('settings-log')">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Inventory Tab ────────────────────────────────────── -->
+    <section id="tab-inventory" class="tab-pane">
+      <div class="pane-inner">
+        <div class="pane-header">
+          <div>
+            <h2>Network Inventory</h2>
+            <p class="subtitle">Discover and monitor devices on your network</p>
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <div class="summary-card" id="sc-total"  data-c="accent">  <div class="sc-num">0</div><div class="sc-lbl">Total</div></div>
+          <div class="summary-card" id="sc-healthy" data-c="success"><div class="sc-num">0</div><div class="sc-lbl">Healthy</div></div>
+          <div class="summary-card" id="sc-warning" data-c="warning"><div class="sc-num">0</div><div class="sc-lbl">Warning</div></div>
+          <div class="summary-card" id="sc-critical" data-c="danger"><div class="sc-num">0</div><div class="sc-lbl">Critical</div></div>
+        </div>
+
+        <div class="toolbar">
+          <select id="inv-filter" class="form-ctrl" onchange="Inventory.applyFilter()">
+            <option value="all">All Status</option>
+            <option value="healthy">Healthy</option>
+            <option value="warning">Warning</option>
+            <option value="critical">Critical</option>
+          </select>
+          <input type="search" id="inv-search" class="form-ctrl search-input"
+                 placeholder="Search hostname / IP..." oninput="Inventory.applyFilter()">
+          <button id="scan-btn" class="btn btn-primary" onclick="Inventory.startScan()">&#128269; Scan Network</button>
+          <button class="btn btn-ghost" onclick="Inventory.exportCSV()">&#8595; Export CSV</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="devices-table">
+            <thead>
+              <tr>
+                <th>Status</th><th>Hostname</th><th>IP Address</th><th>OS</th>
+                <th>CPU</th><th>Cores</th><th>RAM GB</th><th>Disk Free</th>
+                <th>Disk %</th><th>CPU %</th><th>Mem %</th><th>Uptime h</th><th>Last Seen</th>
+              </tr>
+            </thead>
+            <tbody id="devices-tbody">
+              <tr><td colspan="13" class="empty-cell">No devices yet — run a scan.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="card-label">Scan Log</div>
+          <div id="inventory-log" class="log-viewer log-sm"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Permissions Tab ──────────────────────────────────── -->
+    <section id="tab-permissions" class="tab-pane">
+      <div class="pane-inner">
+        <div class="pane-header">
+          <div>
+            <h2>Permissions &amp; Access Control</h2>
+            <p class="subtitle">Manage Windows ACLs, user roles, and access assignments</p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="split-left">
+
+            <div class="card" id="assign-card">
+              <div class="card-label">Assign Permission</div>
+              <div class="form-group">
+                <label>Target (User / Group)</label>
+                <input type="text" id="p-target" class="form-ctrl" placeholder="DOMAIN\User or BUILTIN\Administrators">
+              </div>
+              <div class="form-group">
+                <label>Resource Path</label>
+                <input type="text" id="p-path" class="form-ctrl" placeholder="C:\SharedDocs or \\SERVER\Share">
+              </div>
+              <div class="form-group">
+                <label>Access Level</label>
+                <select id="p-level" class="form-ctrl">
+                  <option>FullControl</option><option>Modify</option>
+                  <option selected>ReadAndExecute</option><option>Read</option>
+                  <option>Write</option><option>NoAccess</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" onclick="Perms.apply()">Apply Permission</button>
+              <div id="perms-log" class="log-viewer log-sm" style="margin-top:10px"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-label">Query Existing ACL</div>
+              <div class="row-gap">
+                <input type="text" id="acl-path" class="form-ctrl flex-1" placeholder="Folder or file path...">
+                <button class="btn btn-ghost" onclick="Perms.queryAcl()">Query</button>
+              </div>
+              <pre id="acl-output" class="acl-output"></pre>
+            </div>
+
+            <div class="card" id="users-card">
+              <div class="card-label">User Management</div>
+              <div class="table-wrap">
+                <table class="data-table" id="users-table">
+                  <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Created</th><th></th></tr></thead>
+                  <tbody id="users-tbody"></tbody>
+                </table>
+              </div>
+              <details class="add-user-details">
+                <summary>Add New User</summary>
+                <div class="add-user-form">
+                  <input type="text"     id="nu-user" class="form-ctrl" placeholder="username">
+                  <input type="email"    id="nu-email" class="form-ctrl" placeholder="email@domain.com">
+                  <input type="password" id="nu-pass" class="form-ctrl" placeholder="password">
+                  <select id="nu-role" class="form-ctrl">
+                    <option>Admin</option><option>IT_Staff</option>
+                    <option selected>Standard_User</option><option>Restricted</option>
+                  </select>
+                  <button class="btn btn-primary" onclick="Perms.createUser()">Add User</button>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="split-right">
+            <div class="card card-flex">
+              <div class="card-label-row">
+                <span class="card-label">Permission Records</span>
+                <button class="btn btn-ghost btn-sm" onclick="Perms.exportCSV()">&#8595; Export</button>
+              </div>
+              <div class="table-wrap flex-1">
+                <table class="data-table">
+                  <thead><tr><th>Target</th><th>Resource Path</th><th>Level</th><th>Applied By</th><th>Date</th><th></th></tr></thead>
+                  <tbody id="perms-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="status-bar">
+    <span id="status-text">Ready</span>
+  </footer>
+</div>
+
+<!-- ── Audit Log Modal ───────────────────────────────────────────────── -->
+<div id="audit-modal" class="modal hidden" onclick="if(event.target===this)AuditLog.close()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>Audit Log</span>
+      <button class="icon-btn" onclick="AuditLog.close()">&#10005;</button>
+    </div>
+    <div class="table-wrap" style="flex:1;overflow:auto">
+      <table class="data-table">
+        <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Device</th><th>Status</th><th>Details</th></tr></thead>
+        <tbody id="audit-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast container ──────────────────────────────────────────────── -->
+<div id="toasts"></div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "name": "Secure_Locked",
+  "description": "Maximum security for sensitive departments (finance, HR, executive). Restrictive policies, no personal apps, enhanced audit settings.",
+  "settings": {
+    "power_mode": "Balanced",
+    "visual_effects": "Balanced",
+    "startup_apps": {
+      "disable": ["OneDrive", "Teams", "Skype", "Discord", "Spotify", "SteamBootstrapper",
+                  "AdobeGCInvoker", "Cortana", "iCloud", "GoogleDrive"],
+      "enable": ["WindowsDefender", "VPNClient", "BitLocker"]
+    },
+    "taskbar": {
+      "hide_search_box": true,
+      "hide_task_view": false,
+      "hide_cortana": true,
+      "hide_news_interests": true,
+      "small_icons": false
+    },
+    "file_explorer": {
+      "show_file_extensions": true,
+      "hide_recent_files": true,
+      "hide_frequent_folders": true,
+      "show_hidden_files": false,
+      "launch_to_this_pc": true
+    },
+    "notifications": {
+      "reduce_notifications": true,
+      "focus_assist": "Priority_Only",
+      "disable_tips": true,
+      "disable_suggestions": true
+    },
+    "windows_update": {
+      "pause_days": 0,
+      "defer_feature_updates_days": 0,
+      "active_hours_start": 20,
+      "active_hours_end": 6
+    },
+    "network": {
+      "disable_ipv6": true,
+      "dns_servers": ["10.0.0.1", "10.0.0.2"]
+    },
+    "defender": {
+      "exclusion_paths": ["C:\\IT_Tools\\"]
+    },
+    "privacy": {
+      "disable_telemetry": true,
+      "disable_advertising_id": true,
+      "disable_location": true,
+      "disable_camera": true,
+      "disable_microphone": true
+    },
+    "security": {
+      "enable_bitlocker": true,
+      "require_password_on_wake": true,
+      "screen_lock_timeout_minutes": 5,
+      "disable_usb_storage": true,
+      "disable_cd_dvd": true,
+      "audit_logon_events": true,
+      "audit_object_access": true
+    }
+  }
+}

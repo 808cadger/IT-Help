@@ -1,0 +1,50 @@
+{
+  "name": "Corporate_Standard",
+  "description": "Default profile for most corporate workstations. Balanced performance, clean taskbar, reduced notifications, and standard file explorer settings.",
+  "settings": {
+    "power_mode": "Balanced",
+    "visual_effects": "Balanced",
+    "startup_apps": {
+      "disable": ["OneDrive", "Teams", "Skype", "Discord", "Spotify", "SteamBootstrapper"],
+      "enable": ["WindowsDefender", "VPNClient"]
+    },
+    "taskbar": {
+      "hide_search_box": true,
+      "hide_task_view": false,
+      "hide_cortana": true,
+      "hide_news_interests": true,
+      "small_icons": false
+    },
+    "file_explorer": {
+      "show_file_extensions": true,
+      "hide_recent_files": true,
+      "hide_frequent_folders": true,
+      "show_hidden_files": false,
+      "launch_to_this_pc": true
+    },
+    "notifications": {
+      "reduce_notifications": true,
+      "focus_assist": "Priority_Only",
+      "disable_tips": true,
+      "disable_suggestions": true
+    },
+    "windows_update": {
+      "pause_days": 7,
+      "defer_feature_updates_days": 365,
+      "active_hours_start": 8,
+      "active_hours_end": 18
+    },
+    "network": {
+      "disable_ipv6": true,
+      "dns_servers": ["8.8.8.8", "8.8.4.4"]
+    },
+    "defender": {
+      "exclusion_paths": ["C:\\IT_Tools\\", "C:\\Scripts\\", "C:\\Temp\\"]
+    },
+    "privacy": {
+      "disable_telemetry": true,
+      "disable_advertising_id": true,
+      "disable_location": true
+    }
+  }
+}

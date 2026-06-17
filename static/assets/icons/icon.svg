@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#1a1d24"/>
+  <!-- Monitor body -->
+  <rect x="72" y="108" width="368" height="234" rx="18" fill="none" stroke="#3b82f6" stroke-width="20"/>
+  <!-- Screen -->
+  <rect x="88" y="124" width="336" height="202" rx="8" fill="#0d1117"/>
+  <!-- Network hub center -->
+  <circle cx="256" cy="196" r="28" fill="#3b82f6"/>
+  <!-- Nodes -->
+  <circle cx="148" cy="270" r="20" fill="#22c55e"/>
+  <circle cx="364" cy="270" r="20" fill="#22c55e"/>
+  <circle cx="190" cy="310" r="15" fill="#f59e0b"/>
+  <circle cx="322" cy="310" r="15" fill="#f59e0b"/>
+  <!-- Lines hub to nodes -->
+  <line x1="234" y1="215" x2="165" y2="254" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <line x1="278" y1="215" x2="347" y2="254" stroke="#3b82f6" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <!-- Lines nodes to sub-nodes -->
+  <line x1="153" y1="288" x2="188" y2="298" stroke="#22c55e" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+  <line x1="359" y1="288" x2="324" y2="298" stroke="#22c55e" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+  <!-- Stand -->
+  <rect x="218" y="342" width="76" height="38" rx="4" fill="#3b82f6"/>
+  <rect x="172" y="380" width="168" height="22" rx="8" fill="#3b82f6"/>
+</svg>

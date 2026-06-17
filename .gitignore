@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+data/it_manager.db
+data/rollbacks/
+*.egg-info/
+.env
+venv/
+.venv/
+dist/
+build/
+*.spec
