@@ -227,6 +227,21 @@ select.form-ctrl { appearance:none; cursor:pointer;
 .log-line-sim     { color:#a78bfa; }
 .log-line-hdr     { color:var(--warning); }
 
+/* ── Access Level Badges ─────────────────────────────────────────────── */
+.access-badge {
+  display:inline-block; font-size:11px; font-weight:600;
+  border-radius:10px; padding:2px 8px; border:1px solid;
+}
+.access-danger  { color:#ef4444; background:#ef444418; border-color:#ef444440; }
+.access-warning { color:#f59e0b; background:#f59e0b18; border-color:#f59e0b40; }
+.access-accent  { color:#3b82f6; background:#3b82f618; border-color:#3b82f640; }
+.access-success { color:#22c55e; background:#22c55e18; border-color:#22c55e40; }
+.access-purple  { color:#a78bfa; background:#a78bfa18; border-color:#a78bfa40; }
+.access-dim     { color:#6b7280; background:#6b728018; border-color:#6b728040; }
+
+/* ── Monospace cells ─────────────────────────────────────────────────── */
+.mono { font-family:"Consolas","Courier New",monospace; font-size:12px; }
+
 /* ── ACL Output ──────────────────────────────────────────────────────── */
 .acl-output {
   background:var(--code-bg); border:1px solid var(--border2); border-radius:4px;

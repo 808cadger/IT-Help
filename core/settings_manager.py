@@ -44,11 +44,66 @@ class SettingsManager:
         lines += self._settings_to_lines(s)
         return lines
 
+    # Human-readable labels for setting keys
+    _LABELS = {
+        "power_mode": "Mode",
+        "hide_search_box": "Hide search box",
+        "hide_task_view": "Hide task view",
+        "hide_cortana": "Hide Cortana",
+        "hide_news_interests": "Hide news & interests",
+        "small_icons": "Small taskbar icons",
+        "show_file_extensions": "Show file extensions",
+        "hide_recent_files": "Hide recent files",
+        "hide_frequent_folders": "Hide frequent folders",
+        "show_hidden_files": "Show hidden files",
+        "launch_to_this_pc": "Launch to This PC",
+        "reduce_notifications": "Reduce notifications",
+        "focus_assist": "Focus assist",
+        "disable_tips": "Disable tips",
+        "disable_suggestions": "Disable suggestions",
+        "pause_days": "Pause updates (days)",
+        "defer_feature_updates_days": "Defer feature updates (days)",
+        "active_hours_start": "Active hours start",
+        "active_hours_end": "Active hours end",
+        "metered_connection_pause": "Pause on metered connection",
+        "disable_telemetry": "Disable telemetry",
+        "disable_advertising_id": "Disable advertising ID",
+        "disable_location": "Disable location",
+        "disable_camera": "Disable camera",
+        "disable_microphone": "Disable microphone",
+        "vpn_auto_connect": "VPN auto-connect",
+        "wifi_sense_disable": "Disable Wi-Fi Sense",
+        "enable_bitlocker": "Enable BitLocker",
+        "require_password_on_wake": "Require password on wake",
+        "screen_lock_timeout_minutes": "Screen lock timeout (min)",
+        "disable_usb_storage": "Disable USB storage",
+        "disable_cd_dvd": "Disable CD/DVD",
+        "audit_logon_events": "Audit logon events",
+        "audit_object_access": "Audit object access",
+        "critical_battery_action": "Critical battery action",
+        "low_battery_threshold": "Low battery %",
+        "sleep_on_battery_minutes": "Sleep on battery (min)",
+        "hibernate_on_battery_minutes": "Hibernate on battery (min)",
+        "large_system_cache": "Large system cache",
+        "disable_paging_executive": "Disable paging executive",
+        "disable_superfetch": "Disable Superfetch",
+    }
+
+    @classmethod
+    def _label(cls, key: str) -> str:
+        return cls._LABELS.get(key, key.replace("_", " ").title())
+
+    @staticmethod
+    def _val(v) -> str:
+        if v is True:  return "Yes"
+        if v is False: return "No"
+        return str(v)
+
     def _settings_to_lines(self, s: dict) -> list[str]:
         lines = []
         pm = s.get("power_mode")
         if pm:
-            lines.append(f"[Power]       Mode → {pm}")
+            lines.append(f"[Power]       Mode → {pm.replace('_', ' ')}")
         ve = s.get("visual_effects")
         if ve:
             lines.append(f"[Visual]      Effects → {ve}")
@@ -60,29 +115,48 @@ class SettingsManager:
         tb = s.get("taskbar", {})
         if tb:
             for k, v in tb.items():
-                lines.append(f"[Taskbar]     {k} → {v}")
+                lines.append(f"[Taskbar]     {self._label(k)} → {self._val(v)}")
         fe = s.get("file_explorer", {})
         if fe:
             for k, v in fe.items():
-                lines.append(f"[Explorer]    {k} → {v}")
+                lines.append(f"[Explorer]    {self._label(k)} → {self._val(v)}")
         notif = s.get("notifications", {})
         if notif:
             for k, v in notif.items():
-                lines.append(f"[Notif]       {k} → {v}")
+                lines.append(f"[Notif]       {self._label(k)} → {self._val(v)}")
         wu = s.get("windows_update", {})
         if wu:
             for k, v in wu.items():
-                lines.append(f"[WinUpdate]   {k} → {v}")
+                lines.append(f"[WinUpdate]   {self._label(k)} → {self._val(v)}")
         net = s.get("network", {})
         if net:
             if net.get("disable_ipv6"):
-                lines.append("[Network]     Disable IPv6")
+                lines.append("[Network]     Disable IPv6 → Yes")
             dns = net.get("dns_servers", [])
             if dns:
-                lines.append(f"[Network]     DNS → {', '.join(dns)}")
+                lines.append(f"[Network]     DNS Servers → {', '.join(dns)}")
+            for k, v in net.items():
+                if k not in ("disable_ipv6", "dns_servers"):
+                    lines.append(f"[Network]     {self._label(k)} → {self._val(v)}")
         defender = s.get("defender", {})
         for path in defender.get("exclusion_paths", []):
-            lines.append(f"[Defender]    Exclusion → {path}")
+            lines.append(f"[Defender]    Exclusion path → {path}")
+        privacy = s.get("privacy", {})
+        if privacy:
+            for k, v in privacy.items():
+                lines.append(f"[Privacy]     {self._label(k)} → {self._val(v)}")
+        security = s.get("security", {})
+        if security:
+            for k, v in security.items():
+                lines.append(f"[Security]    {self._label(k)} → {self._val(v)}")
+        battery = s.get("battery", {})
+        if battery:
+            for k, v in battery.items():
+                lines.append(f"[Battery]     {self._label(k)} → {self._val(v)}")
+        memory = s.get("memory", {})
+        if memory:
+            for k, v in memory.items():
+                lines.append(f"[Memory]      {self._label(k)} → {self._val(v)}")
         return lines
 
     def apply_profile(self, profile_name: str,

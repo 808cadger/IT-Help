@@ -5,6 +5,7 @@ import json
 import queue as stdlib_queue
 import sys
 import threading
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -29,12 +30,20 @@ SECRET = "it-help-jwt-secret-change-in-production"
 ALGORITHM = "HS256"
 TOKEN_HOURS = 8
 
-app = FastAPI(title="IT Help", docs_url=None, redoc_url=None)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-
 db = Database()
 db.initialize()
 auth_mgr = AuthManager(db)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    dummy = User(id=0, username="system", email="", role="Admin")
+    SettingsManager(db, dummy).load_profiles_from_disk()
+    yield
+
+
+app = FastAPI(title="IT Help", docs_url=None, redoc_url=None, lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 security = HTTPBearer(auto_error=False)
 STATIC = ROOT / "static"
@@ -282,11 +291,6 @@ async def get_logs(limit: int = 300, p=Depends(current_user)):
     return [dict(r) for r in db.get_logs(limit)]
 
 # ── Static + SPA ──────────────────────────────────────────────────────────
-@app.on_event("startup")
-async def startup():
-    dummy = User(id=0, username="system", email="", role="Admin")
-    SettingsManager(db, dummy).load_profiles_from_disk()
-
 app.mount("/assets", StaticFiles(directory=str(STATIC / "assets")), name="assets")
 
 @app.get("/manifest.json")
